@@ -1,0 +1,13 @@
+Source: nullunit
+Section: nonfree/autobots
+Priority: optional
+Maintainer: Peter Howe <peter.howe@emc.com>
+Build-Depends: cdbs, debhelper (>= 7), python (>= 2.6), python-support, lsb-release
+XS-Python-Version: >= 2.6
+Standards-Version: 3.8.3
+
+Package: nullunit
+Architecture: all
+Depends: python (>= 2.6), python-support, python-simplejson, python-cinp (>= 0.4), cron, plato-client, git, make, ${shlibs:Depends}, ${misc:Depends}
+Description: MCP Agent
+  MCP Agent

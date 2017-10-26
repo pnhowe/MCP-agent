@@ -1,0 +1,175 @@
+#!/usr/bin/python -u
+
+import sys
+import logging
+import json
+from optparse import OptionParser, OptionGroup
+
+from nullunit.common import getConfig, getMCP
+
+oparser = OptionParser( description='nullunit iterator' )
+
+oparser.add_option( '-v', '--verbose', dest='verbose', default=False, action='store_true' )
+
+# job contoll
+ogroup = OptionGroup( oparser, 'Job Control Options', 'Affects only the job attached to this device' )
+ogroup.add_option(       '--signal-ran', help='Signal the job has been Run', dest='signal_ran', default=False, action='store_true' )
+oparser.add_option_group( ogroup )
+
+# query options
+ogroup = OptionGroup( oparser, 'Resource Query Options', 'Select which Resources to Act Against' )
+ogroup.add_option( '-r', '--resource', help='with resource name', dest='resource', default=None )
+ogroup.add_option( '-i', '--index', help='query with resource index', dest='index', default=None, type='int' )
+ogroup.add_option( '-c', '--count', help='count', dest='count', default=None, type='int' )
+oparser.add_option_group( ogroup )
+
+# status options
+ogroup = OptionGroup( oparser, 'Status Options', 'Feed back returnd as the exit code' )
+ogroup.add_option(       '--are-configured', help='0 if all are configured 2 otherwise', dest='are_configured', default=False, action='store_true' )
+oparser.add_option_group( ogroup )
+
+# data options
+ogroup = OptionGroup( oparser, 'Data Reterival Options', 'Retrieve the following information, only one' )
+#ogroup.add_option(       '--config', help='get plato config config', dest='config', default=False, action='store_true' )
+#ogroup.add_option(       '--device', help='get plato device config', dest='device', default=False, action='store_true' )
+ogroup.add_option(       '--resource-count', help='get the number of resources that fit the query', dest='resource_count', default=False, action='store_true' )
+ogroup.add_option(       '--primary-ip', help='get the primary ip', dest='primary_ip', default=False, action='store_true' )
+ogroup.add_option(       '--get-keyval', help='get value for config key', dest='get_keyval', type='string' )
+oparser.add_option_group( ogroup )
+
+# data Input options
+ogroup = OptionGroup( oparser, 'Data Setting Options', 'Data Setting Options' )
+ogroup.add_option(       '--set-keyval', help='set the config key to value, can be specified multiple times (ie: --set-keyval=mykey:myvalue), if value starts with { or [ it will be treated as JSON. Tip: you may have to wrap in \'\' ie: \'--set-keyval=myval=[ "stuff", "here" ]\'', dest='set_keyval', type='string', action='append' )
+oparser.add_option_group( ogroup )
+
+# output option
+ogroup = OptionGroup( oparser, 'Data Formatting', 'Data Formatting options for Data Reterival Options' )
+ogroup.add_option(        '--file', help='write output to file, otherwise will be sent to stdout.', dest='file' )
+ogroup.add_option(        '--json', help='write output in JSON format', dest='json', default=False, action='store_true' )
+oparser.add_option_group( ogroup )
+
+( options, args ) = oparser.parse_args()
+
+logging.basicConfig()
+logger = logging.getLogger()
+
+if options.verbose:
+  logger.setLevel( logging.DEBUG )
+
+config = getConfig()
+if not config:
+  sys.exit( 1 )
+
+mcp = getMCP( config )
+if not mcp:
+  sys.exit( 1 )
+
+# job control
+if options.signal_ran:
+  mcp.signalJobRan()
+  sys.exit( 0 )
+
+# status options
+if options.are_configured:
+  if options.resource is None:
+    print 'Resource Name is required'
+    sys.exit( 1 )
+
+  status_list = mcp.getConfigStatus( options.resource, options.index, options.count )
+  result = True
+  for item in status_list:
+    if options.verbose:
+      print '%s - %s' % ( item, status_list[ item ] )
+
+    result &= ( status_list[ item ] == 'Configured' )
+
+  if result:
+    sys.exit( 0 )
+
+  sys.exit( 2 )
+
+# data setting options
+if options.set_keyval:
+  if options.resource is None:
+    print 'Resource Name is required'
+    sys.exit( 1 )
+
+  values = {}
+  for item in options.set_keyval:
+    try:
+      ( key, value ) = item.split( ':', 1 )
+    except IndexError:
+      print 'Error parsing item: "%s"' % item
+      sys.exit( 1 )
+
+    if value[0] in ( '[', '{' ):
+      value = json.loads( value )
+
+    values[ key ] = value
+
+  if not mcp.setConfigValues( values, options.resource, options.index, options.count ):
+    print 'Error setting config Values "%s"' % values
+    sys.exit( 1 )
+
+  sys.exit( 0 )
+
+#Data Retreival Options
+if options.primary_ip or options.get_keyval or options.resource_count:
+  if options.resource is None:
+    print 'Resource Name is required'
+    sys.exit( 1 )
+
+  result = []
+
+  config_map = mcp.getProvisioningInfo( options.resource, options.index, options.count )
+  # we need to sort the results, they come down in a map
+  config_list = []
+  key_list = config_map.keys()
+  key_list.sort( key=lambda x: int( x ) )
+  for key in key_list:
+    config_list.append( config_map[ key ] )
+
+  if options.primary_ip:
+    for config in config_list:
+      result.append( config[ 'address_provisioning' ][ 'address' ] )
+
+  elif options.get_keyval:
+    for config in config_list:
+      try:
+        result.append( config[ options.get_keyval ] )
+      except KeyError:
+        result.append( '<not found>' )
+
+  elif options.resource_count:
+    result = len( config_list )
+
+  else:
+    print 'Trouble with data retreival option'
+    sys.exit( 1 )
+
+  if options.count == 1 and isinstance( result, list ):
+    try:
+      result = result[0] # there is only one, no point outputing a list
+    except IndexError:
+      result = ''  # don't do None, this will output `None`
+
+  if options.file:
+    output = file( options.file, 'w' )
+  else:
+    output = sys.stdout
+
+  if options.json:
+    output.write( json.dumps( result ) )
+  else:
+    if isinstance( result, basestring ):
+      output.write( result )
+    elif isinstance( result, int ):
+      output.write( str( result ) )
+    else:
+      for item in result:
+        output.write( '%s\n' % item )
+
+  sys.exit( 0 )
+
+oparser.print_help()
+sys.exit( 1 )

@@ -1,0 +1,228 @@
+#!/usr/bin/python -u
+import os
+
+os.environ.setdefault( "DJANGO_SETTINGS_MODULE", "plato.settings" )
+
+import sys
+import logging
+from optparse import OptionParser
+
+from plato.Config.models import Config, Profile
+from plato.Network.models import IpAddress, IpRoute, SubNet
+from plato.Pod.models import Pod
+from plato.Config.lib import createConfig
+from plato.Device.lib import createDevice
+
+from nullunit.common import getConfig, getMCP
+
+oparser = OptionParser( description='nullunit Plato Master Sync/Loader' )
+
+oparser.add_option( '-v', '--verbose', dest='verbose', default=False, action='store_true' )
+
+oparser.add_option( '-n', '--network', help='(query) with network name, requires -p/--pod', dest='network', default=None )
+oparser.add_option( '-r', '--resource', help='(query) with resource name', dest='resource', default=None )
+oparser.add_option( '-i', '--index', help='(query) query with resource index\n(if count is specified, this is the starting index, otherwise one will be returned)', dest='index', default=None, type='int' )
+oparser.add_option( '-c', '--count', help='(query) count', dest='count', default=None, type='int' )
+
+oparser.add_option( '-e', '--existing', help='Overlay Configuration/Device data onto existing Configs/Devices,\notherwise new Configs/Devices will be created.\nNOTE: specify with what the hostname starts with.', dest='existing', metavar='HOSTNAME', default=None )
+oparser.add_option( '-p', '--pod', help='(existing) Pod for searching(optional)\n(new) pod to create new configs in', dest='pod', default=None )
+oparser.add_option( '-o', '--offset', help='Starting Existing offset', dest='offset', type='int' )
+
+oparser.add_option( '--auto-configure', help='set to Auto configure (default: False)', dest='auto_configure', default=False, action='store_true' )
+oparser.add_option( '--priority', help='priority to set (default: 100)', dest='priority', default=100, type='int')
+oparser.add_option( '--profile', help='config profile (new - required) (existing - optional)', dest='profile', default=None )
+
+oparser.add_option( '--ipmi', help='*MCP - use ip from MCP, <subnet> - what subnet to assign from', dest='ipmi', default=None, metavar='SUBNET' )
+oparser.add_option( '--bond0', help='See --ipmi', dest='bond0', default=None, metavar='SUBNET' )
+oparser.add_option( '--eth0', help='See --ipmi', dest='eth0', default=None, metavar='SUBNET' )
+oparser.add_option( '--eth1', help='See --ipmi', dest='eth1', default=None, metavar='SUBNET' )
+oparser.add_option( '--eth2', help='See --ipmi', dest='eth2', default=None, metavar='SUBNET' )
+oparser.add_option( '--eth3', help='See --ipmi', dest='eth3', default=None, metavar='SUBNET' )
+oparser.add_option( '--primary-interface', help='Primary Interface, (default: if not *MCP -> eth0, otherwise pass through from *MCP)', dest='primary_interface', default=None )
+oparser.add_option( '--provisioning-interface', help='Provisioning Interface, (default: see primary-interface)', dest='provisioninig_interface', default=None )
+
+( options, args ) = oparser.parse_args()
+
+def setupConfig( config, src, options ):
+  target = config.target
+  target.system_serial_number = src.get( 'system_serial_number', None )
+  target.chassis_serial_number = src.get( 'chassis_serial_number', None )
+  target.save()
+
+  for name in src[ 'interfaces' ]:
+    iface = getattr( target, name, None )
+    if iface is None:
+      print 'WARNING! plato does not have interface "%s", skipping...' % name
+      continue
+
+    src_iface = src[ 'interfaces' ][ name ]
+
+    if name not in ( 'bond0', 'bond1' ):
+      iface.mac = src_iface[ 'mac' ]
+
+    iface.save()
+
+    subnet_name = getattr( options, name, None )
+    if subnet_name:
+      if subnet_name == '*MCP':
+        for addr in src_iface[ 'address_list' ]:
+          ip_address = IpAddress()
+          ip_address.interface_name = name
+          ip_address.config = config
+          ip_address.primary = ( addr[ 'primary' ] if options.primary_interface is None else ( options.primary_interface == name ) )
+          ip_address.provisioning = ( addr[ 'provisioning' ] if options.provisioninig_interface is None else ( options.provisioninig_interface == name ) )
+          ip_address.ip_address = addr[ 'address' ]
+          ip_address.netmask = addr[ 'netmask' ]
+          ip_address.gateway = addr.get( 'gateway', None )
+          ip_address.vlan = addr.get( 'vlan', 0 )
+          ip_address.tagged = addr.get( 'tagged', False )
+          ip_address.sub_interface = addr.get( 'sub_interface', 0 )
+          ip_address.save()
+
+          for tmp in addr.get( 'route_list', [] ):
+            route = IpRoute()
+            route.ip_address = ip_address
+            route.route = tmp[ 'route' ]
+            route.gateway = tmp[ 'gateway' ]
+            route.save()
+
+      else:
+        ip_address = IpAddress()
+        ip_address.interface_name = name
+        ip_address.config = config
+        ip_address.primary = ( 'eth0' if options.primary_interface is None else options.primary_interface ) == name
+        ip_address.provisioning = ( 'eth0' if options.provisioninig_interface is None else options.provisioninig_interface ) == name
+        subnet = SubNet.objects.get( pk=subnet_name )
+        ip_address.ip_address = subnet.unused_list[0]
+        ip_address.netmask = subnet.netmask
+        ip_address.gateway = subnet.gateway
+        ip_address.vlan = subnet.vlan
+        ip_address.tagged = False
+        ip_address.sub_interface = 0
+        ip_address.save()
+
+  if options.profile:
+    try:
+      config.profile = Profile.objects.get( pk=options.profile )
+    except Profile.DoesNotExist:
+      print 'profile "%s" not found' % options.profile
+      sys.exit( 1 )
+
+  config.config_values = src[ 'config_values' ]
+  config.setToProvisioned()
+
+
+logging.basicConfig()
+logger = logging.getLogger()
+
+if options.verbose:
+  logger.setLevel( logging.DEBUG )
+
+config = getConfig()
+if not config:
+  sys.exit( 1 )
+
+mcp = getMCP( config )
+if not mcp:
+  sys.exit( 1 )
+
+if options.pod:
+  try:
+    pod = Pod.objects.get( pk=options.pod )
+  except Pod.DoesNotExist:
+    print 'pod with code "%s" not found'
+    sys.exit( 1 )
+
+else:
+  pod = None
+
+# do network
+
+if options.network:
+  if pod is None:
+    print 'Pod is required'
+    sys.exit( 1 )
+
+  try:
+    subnet = SubNet.objects.get( description=options.network, pod=pod )
+  except SubNet.DoesNotExist:
+    subnet = SubNet()
+    subnet.pod = pod
+    subnet.description = options.network
+
+  network_info = mcp.getNetworkInfo( options.network )
+
+  subnet.network = network_info[ 'network' ]
+  subnet.prefix = network_info[ 'prefix' ]
+  subnet.gateway = network_info.get( 'gateway', None )
+  subnet.broadcast = network_info.get( 'broadcast', None )
+  subnet.vlan = network_info.get( 'vlan', None )
+  subnet.save()
+
+  sys.exit( 0 )
+
+# do compute resource
+
+if options.resource is None:
+  print 'resource name is required'
+  sys.exit( 1 )
+
+if ( options.existing is None ) and ( ( options.pod is None ) or ( options.profile is None ) ):
+  print 'pod and/or profile is required when not using existing configs'
+  sys.exit( 1 )
+
+
+
+
+
+provisioning_list = mcp.getProvisioningInfo( options.resource, options.index, options.count ).values()
+
+if options.existing:
+  config_list = Config.objects.filter( hostname__startswith=options.existing ).order_by( 'hostname' )
+  if pod:
+    config_list = config_list.filter( pod=pod )
+
+  if options.offset:
+    if options.count:
+      config_list = config_list[ options.offset:options.offset + options.count ]
+
+    else:
+      config_list = config_list[ options.offset: ]
+
+  if len( config_list ) < len( provisioning_list ):
+    print 'Not enough existing target nodes found, try a less specific hostname and/or smaller offset'
+    sys.exit( 1 )
+
+  for config in config_list:
+    src = provisioning_list.pop( 0 )
+    print 'Doing plato: "%s" mcp: "%s"' % ( config.description, src[ 'description' ] )
+    config.auto_configure = options.auto_configure
+    config.configure_priority = options.priority
+    config.save()
+    target = config.target
+    if target.type != src[ 'type' ]:
+      print 'Target type mismatch plato:"%s" mcp:"%s"' % ( target.type, src[ 'type' ] )
+      sys.exit( 1 )
+
+    setupConfig( config, src, options )
+
+else:
+  while provisioning_list:
+    src = provisioning_list.pop( 0 )
+    print 'Doing mcp: "%s"' % src[ 'description' ]
+
+    config = createConfig( src[ 'hostname' ], pod, None, [], options.auto_configure, options.priority )
+
+    args = {}
+    for name in ( ( 'sol_console', 'ipmi_sol' ), ( 'lan_channel', 'ipmi_lan_channel' ) ):
+      try:
+        args[ name[1] ] = src[ name[0] ]
+      except KeyError:
+        pass
+
+    device = createDevice( src[ 'type' ], src[ 'interfaces' ].keys(), config, **args )
+
+    setupConfig( config, src, options )
+
+
+sys.exit( 0 )

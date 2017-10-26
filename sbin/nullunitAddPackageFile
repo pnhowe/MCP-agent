@@ -1,0 +1,52 @@
+#!/usr/bin/python -u
+
+import sys
+from optparse import OptionParser
+import logging
+
+from nullunit.common import getConfig, getPackrat
+
+oparser = OptionParser( description='nullunit Add Package File' )
+
+oparser.add_option( '-v', '--verbose', dest='verbose', default=False, action='store_true' )
+
+oparser.add_option( '-d', '--distro', help='Set the distro, needed when packrat is unable to auto-detect the distro (optional)', dest='distro', default=None )
+oparser.add_option( '-j', '--justification', help='Justification for the package file', dest='justification', default=None )
+oparser.add_option( '-p', '--provenance', help='Provenance for the package file', dest='provenance', default=None )
+
+( options, args ) = oparser.parse_args()
+
+logging.basicConfig()
+logger = logging.getLogger()
+
+if options.verbose:
+  logger.setLevel( logging.DEBUG )
+
+if not options.justification or not options.provenance:
+  print 'Justification and Provenance are required'
+  sys.exit( 1 )
+
+config = getConfig()
+if not config:
+  sys.exit( 1 )
+
+packrat = getPackrat( config )
+if not packrat:
+  sys.exit( 1 )
+
+file = open( args[0], 'r' )
+result = packrat.addPackageFile( file, options.justification, options.provenance, options.distro )
+file.close()
+
+if isinstance( result, list ):
+  print 'Unable to auto detect distro, re-call passing -d with one of the following "%s"' % result
+  packrat.logout()
+  sys.exit( 1 )
+
+if result is not True:
+  print 'Unexpected result "%s"' % result
+  packrat.logout()
+  sys.exit( 1 )
+
+packrat.logout()
+sys.exit( 0 )

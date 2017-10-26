@@ -1,0 +1,136 @@
+#!/usr/bin/python -u
+
+import sys
+import os
+from optparse import OptionParser
+import logging
+import ConfigParser
+import signal
+import time
+from logging.handlers import SysLogHandler
+
+from nullunit.common import getConfig, getMCP
+from nullunit.iterate import readState, writeState, doStep
+from nullunit.procutils import open_output, close_output
+
+PID_FILE = '/var/run/nullunitIterate.pid'
+STATE_FILE = '/var/lib/mcp/nullunitIterate.state'
+
+def _sigHandler( sig, frame ):
+  global cont
+  logging.debug( 'Got Signal %d, stopping...' % sig )
+  cont = False
+
+oparser = OptionParser( description='nullunit iterator' )
+
+oparser.add_option( '-v', '--verbose', dest='verbose', default=False, action='store_true' )
+oparser.add_option( '-s', '--step', dest='step', default=False, action='store_true' )
+
+( options, args ) = oparser.parse_args()
+
+logging.basicConfig()
+logger = logging.getLogger()
+handler = SysLogHandler( address='/dev/log', facility=SysLogHandler.LOG_DAEMON )
+handler.setFormatter( logging.Formatter( fmt='nullunitIterate [%(process)d]: %(message)s' ) )
+logger.addHandler( handler )
+
+if options.verbose:
+  logger.setLevel( logging.DEBUG )
+else:
+  logger.setLevel( logging.INFO )
+
+logging.info( 'Starting...' )
+
+if os.path.exists( PID_FILE ):
+  logging.error( 'pid file exists, bailing...' )
+  logging.shutdown()
+  sys.exit( 0 )
+
+tmp = open( PID_FILE, 'w' )
+tmp.write( '%s\n' % os.getpid() )
+tmp.close()
+
+cont = True
+signal.signal( signal.SIGINT, _sigHandler )
+signal.signal( signal.SIGTERM, _sigHandler )
+
+config = getConfig()
+if not config:
+  logging.error( 'Unable to load Config' )
+  os.unlink( PID_FILE )
+  logging.shutdown()
+  sys.exit( 1 )
+
+if config.get( 'mcp', 'prealloc' ): # this needs to be re-thought, when plato uses CINP we can ask directly for this nodes satus
+  logging.warning( 'Preallocated, waiting for insturctions' )
+  os.system( 'configManager -c nullunit -g' )
+  config = getConfig()
+  if not config.get( 'mcp', 'prealloc' ):
+    os.system( 'configManager -c -a -g' )
+    os.system( 'reboot' )
+
+  os.unlink( PID_FILE )
+  logging.shutdown()
+  sys.exit( 0 )
+
+mcp = getMCP( config )
+if not mcp:
+  logging.error( 'Unable to connect to MCP' )
+  os.unlink( PID_FILE )
+  logging.shutdown()
+  sys.exit( 1 )
+
+try:
+  state = readState( STATE_FILE )
+except ConfigParser.Error as e:
+  print 'Error retreiving git url, git branch, and/or make target from config file'
+  os.unlink( PID_FILE )
+  logging.shutdown()
+  sys.exit( 1 )
+
+if state is None:
+  state = {
+            'state': 'clone',
+            'url': config.get( 'git', 'url' ),
+            'branch': config.get( 'git', 'branch' ),
+            'target': config.get( 'make', 'target' ),
+         }
+
+# loop start
+
+counter = 0
+while cont:
+  if state[ 'state' ] in ( 'done', 'failed' ):
+    mcp.sendStatus( 'Ran' )
+    if config.get( 'make', 'target' ) in ( 'lint', 'test', 'dpkg', 'respkg', 'rpm', 'resource', 'docs' ):
+      logging.info( 'Signaling Job Ran' )
+      mcp.signalJobRan()
+
+    logging.info( 'Task Complete' )
+    break
+
+  counter += 1
+  open_output( '/tmp/nullunitIterate_debug.%s.%s.log' % ( os.getpid(), counter ) )
+
+  try:
+    doStep( state, mcp, config )
+  except Exception as e:
+    logging.exception( 'Exception in doStep for "%s".' % state[ 'state' ] )
+    mcp.sendStatus( 'Exception: (%s) "%s"' % ( e.__class__.__name__, e ) )
+    logging.shutdown()
+    sys.exit( 1 )
+
+  close_output()
+
+  logging.info( 'Writing State' )
+  writeState( STATE_FILE, state )
+
+  if options.step:
+    break
+
+  time.sleep( 2 )
+
+logging.info( 'Done' )
+os.unlink( PID_FILE )
+logging.shutdown()
+sys.exit( 0 )

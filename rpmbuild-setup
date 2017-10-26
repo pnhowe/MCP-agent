@@ -1,0 +1,62 @@
+#!/bin/sh
+set -e
+set -x
+
+DISTRO_RELEASE="el$(lsb_release -sr | awk -F "." '{ print $1 }')_1"
+
+DEB_RELEASE="$( head debian-common/changelog -n1 | sed 's/.*(\([^)]*\)).*/\1/' )"
+RELEASE="$( echo "$DEB_RELEASE" | cut -d '-' -f2 )"
+VERSION="$( echo "$DEB_RELEASE" | cut -d '-' -f1 )"
+
+echo "Setting up for '$DISTRO_RELEASE' Version: '$VERSION' Release: '$RELEASE'"
+
+TOPDIR="$( pwd )/rpmbuild"
+SRCDIR="$( pwd )"
+
+mkdir -p "$TOPDIR"
+mkdir -p "$TOPDIR/RPMS"
+mkdir -p "$TOPDIR/BUILD"
+mkdir -p "$TOPDIR/BUILDROOT"
+
+cat > rpmbuild/config.spec <<SPECFILE
+%define _topdir $TOPDIR
+%define _srcdir $SRCDIR
+
+Name:           nullunit
+Summary:        MCP Client
+Version:        $VERSION
+Release:        $RELEASE.$DISTRO_RELEASE
+License:        Nonfree
+Group:          nonfree/rubicon
+Requires:       python, python-simplejson, python-cinp, /usr/sbin/crond, plato-client, git, make, redhat-lsb-core
+BuildArch:      noarch
+
+%description
+nullunit the MCP Client
+
+%install
+cd %{_srcdir}
+./setup.py build
+./setup.py install --prefix=%{buildroot}/usr
+make install DESTDIR=%{buildroot}/
+mkdir -p %{buildroot}/etc/cron.d
+cp debian-common/cron.d %{buildroot}/etc/cron.d/nullunit
+
+%files
+/*
+
+%changelog
+
+%post
+echo "Rebuilding config files..."
+/usr/sbin/configManager -c nullunit
+
+echo "Reloading cron..."
+/etc/init.d/cron reload || true
+
+echo "Creating state dir..."
+mkdir -p /var/lib/mcp
+
+%postun
+
+SPECFILE
