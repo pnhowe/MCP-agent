@@ -1,40 +1,47 @@
+nullunit (0.28-1) DIST; urgency=medium
+
+  * Bumped added MCP version 0.10
+  * added centos-7
+
+ -- Peter Howe <peter.howe@virtustream.com>  Fri, 07 Dec 2018 14:30:49 -0700
+
 nullunit (0.27-5) DIST; urgency=medium
 
   * updated nullunitInterface for the new mcp/contractor interface
 
- -- Peter <peter@xps15>  Mon, 27 Aug 2018 08:12:23 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Mon, 27 Aug 2018 08:12:23 -0600
 
 nullunit (0.26-5) DIST; urgency=medium
 
   * combining test/lint
   * flag to enable/disable uploading packages
 
- -- Peter <peter@xps15>  Mon, 06 Aug 2018 16:02:32 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Mon, 06 Aug 2018 16:02:32 -0600
 
 nullunit (0.25-3) DIST; urgency=medium
 
   * Test score extraction
 
- -- Peter <peter@xps15>  Fri, 20 Jul 2018 12:42:18 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Fri, 20 Jul 2018 12:42:18 -0600
 
 nullunit (0.24-1) DIST; urgency=medium
 
   * Packaging updates
   * renamed docs to doc
 
- -- Peter <peter@xps15>  Mon, 16 Jul 2018 23:20:38 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Mon, 16 Jul 2018 23:20:38 -0600
 
 nullunit (0.23-3) DIST; urgency=medium
 
   * http(s)_proxy env vars
 
- -- Peter <peter@xps15>  Fri, 13 Jul 2018 08:55:57 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Fri, 13 Jul 2018 08:55:57 -0600
 
 nullunit (0.22-2) DIST; urgency=medium
 
   * Packaging tweeks
 
- -- Peter <peter@xps15>  Thu, 12 Jul 2018 12:21:41 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Thu, 12 Jul 2018 12:21:41 -0600
 
 nullunit (0.22-1) DIST; urgency=medium
 
@@ -42,47 +49,47 @@ nullunit (0.22-1) DIST; urgency=medium
   * Updated to work with new MCP that uses Contractor
   * Updated to to packrat api 1.5
 
- -- Peter <peter@xps15>  Sat, 07 Jul 2018 22:09:34 -0600
+ -- Peter Howe <peter.howe@virtustream.com>  Sat, 07 Jul 2018 22:09:34 -0600
 
 nullunit (0.21-1) DIST; urgency=medium
 
   * updates for docs target
 
- -- Peter <peter@blueboy>  Tue, 25 Oct 2016 23:57:58 -0600
+ -- Peter Howe <peter@blueboy>  Tue, 25 Oct 2016 23:57:58 -0600
 
 nullunit (0.20-1) DIST; urgency=medium
 
   * Changes to Accomadate new Packrat
 
- -- Peter <peter@blueboy>  Thu, 07 Jul 2016 14:18:02 -0600
+ -- Peter Howe <peter@blueboy>  Thu, 07 Jul 2016 14:18:02 -0600
 
 nullunit (0.19-3) DIST; urgency=medium
 
   * lint and test score returnd to MCP
   * package list returnd to MCP
 
- -- Peter <peter@blueboy>  Fri, 15 Apr 2016 22:45:00 -0600
+ -- Peter Howe <peter@blueboy>  Fri, 15 Apr 2016 22:45:00 -0600
 
 nullunit (0.18-7) DIST; urgency=medium
 
   * change workd dir to help out go builds
   * saving more output
 
- -- Peter <peter@blueboy>  Thu, 10 Mar 2016 10:09:02 -0700
+ -- Peter Howe <peter@blueboy>  Thu, 10 Mar 2016 10:09:02 -0700
 
 nullunit (0.17-3) DIST; urgency=medium
 
   * run <target>-setup for all targets,
     not just package ones
 
- -- Peter <peter@blueboy>  Tue, 02 Feb 2016 15:17:33 -0700
+ -- Peter Howe <peter@blueboy>  Tue, 02 Feb 2016 15:17:33 -0700
 
 nullunit (0.16-2) DIST; urgency=medium
 
   * reboot after getting config to make sure
     system is cleanly loaded as it's new id
 
- -- Peter <peter@blueboy>  Mon, 25 Jan 2016 15:05:16 -0700
+ -- Peter Howe <peter@blueboy>  Mon, 25 Jan 2016 15:05:16 -0700
 
 nullunit (0.15-6) DIST; urgency=medium
 
@@ -91,101 +98,101 @@ nullunit (0.15-6) DIST; urgency=medium
   * support for reading config values
   * nullunit now runs all at once
 
- -- Peter <peter@blueboy>  Mon, 18 Jan 2016 10:31:41 -0700
+ -- Peter Howe <peter@blueboy>  Mon, 18 Jan 2016 10:31:41 -0700
 
 nullunit (0.14-2) DIST; urgency=medium
 
   * to a repo update before installing requirements
 
- -- Peter <peter@blueboy>  Tue, 12 Jan 2016 16:41:39 -0700
+ -- Peter Howe <peter@blueboy>  Tue, 12 Jan 2016 16:41:39 -0700
 
 nullunit (0.13-1) DIST; urgency=medium
 
   * Preallocation support
 
- -- Peter <peter@blueboy>  Tue, 12 Jan 2016 08:26:23 -0700
+ -- Peter Howe <peter@blueboy>  Tue, 12 Jan 2016 08:26:23 -0700
 
 nullunit (0.12-1) DIST; urgency=medium
 
   * handeling multiple package files per line
 
- -- Peter <peter@blueboy>  Wed, 02 Sep 2015 08:18:00 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 02 Sep 2015 08:18:00 -0600
 
 nullunit (0.11-1) DIST; urgency=medium
 
   * nullunitMastersync tweekes
   * bug fixes
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.10-3) DIST; urgency=medium
 
   * rpkg to respkg
   * pass to Makefile resource name index
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.9-1) DIST; urgency=medium
 
   * Fixing some Make file and time slew problems
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.8-1) DIST; urgency=medium
 
   * Added rpkg support
   * Packrat connections have keepalive for long uploads
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.7-2) DIST; urgency=medium
 
   * Fixing Package In Use logic
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.7-1) DIST; urgency=medium
 
   * Subprocess output cleanup
   * Bug fixes
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.6-1) DIST; urgency=medium
 
   * Checkes to make sure the filename isn't in use before uploading to packrat
   * *-file can be absolute
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.5-1) DIST; urgency=medium
 
   * make clean and make <target>-setup for dpkg, rpm, resource targets
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.4-1) DIST; urgency=medium
 
   * make <target> -> mcp feedback improvment
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.3-1) DIST; urgency=medium
 
   * rpm support
   * fixes
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.2-1) DIST; urgency=medium
 
   * added nullunitInterface, MasterSync, AddPackageFile
   * updateing Makefile to make packageable
 
- -- Peter <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
+ -- Peter Howe <peter@blueboy>  Wed, 10 Jun 2015 16:30:23 -0600
 
 nullunit (0.1-1) DIST; urgency=medium
 
   * Initial release.
 
- -- Peter <peter@blueboy>  Mon, 25 May 2015 16:53:02 -0600
+ -- Peter Howe <peter@blueboy>  Mon, 25 May 2015 16:53:02 -0600

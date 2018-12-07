@@ -77,8 +77,10 @@ if not config.get( 'mcp', 'job_id' ):
       execute( '/usr/bin/apt-get -y upgrade' )
 
     elif PACKAGE_MANAGER == 'yum':
-      execute( '/usr/bin/yum update' )
+      execute( '/usr/bin/yum -y update' )
 
+    time.sleep( 2 )
+    os.system( 'sync' )
     time.sleep( 2 )
     os.system( 'reboot' )
 
