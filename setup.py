@@ -24,7 +24,7 @@ setup( name='nullunit',
        description='MCP Agent',
        author='Peter Howe',
        version='0.1',
-       author_email='peter.howe@emc.com',
+       author_email='peter.howe@virtustream.com',
        packages=find_packages(),
        cmdclass={ 'build_py': build }
        )

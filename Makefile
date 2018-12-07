@@ -1,6 +1,7 @@
 DISTRO := $(shell lsb_release -si | tr A-Z a-z)
 DISTRO_MAJOR_VERSION := $(shell lsb_release -sr | cut -d. -f1)
 DISTRO_NAME := $(shell lsb_release -sc | tr A-Z a-z)
+VERSION := $(shell head -n 1 debian-common/changelog | awk '{match( $$0, /\(.+?\)/); print substr( $$0, RSTART+1, RLENGTH-2 ) }' | cut -d- -f1 )
 
 all:
 	./setup.py build
@@ -49,7 +50,7 @@ lint:
 test:
 	py.test-3 nullunit --cov=nullunit --cov-report html --cov-report term
 
-.PHONY:: test-distros lint-requires lint test-requires test
+.PHONY:: test-distrostest-requires lint test
 
 dpkg-distros:
 	echo ubuntu-trusty ubuntu-xenial ubuntu-bionic
@@ -71,7 +72,7 @@ dpkg-file:
 .PHONY:: dpkg-distros dpkg-requires dpkg-file
 
 rpm-distros:
-	echo centos-6
+	echo centos-6 centos-7
 
 rpm-requires:
 	echo rpm-build python34-setuptools

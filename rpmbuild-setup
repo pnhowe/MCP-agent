@@ -41,7 +41,11 @@ mkdir -p %{buildroot}/etc/cron.d
 cp debian-common/cron.d %{buildroot}/etc/cron.d/nullunit
 
 %files
-/*
+/usr/lib/python3.4/site-packages/*
+/usr/bin/*
+/var/lib/config-curator/templates/*
+/etc/cron.d/*
+/etc/mcp
 
 %changelog
 

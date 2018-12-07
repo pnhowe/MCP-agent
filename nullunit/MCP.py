@@ -5,7 +5,7 @@ import math
 
 from cinp import client
 
-API_VERSION = '0.9'
+MCP_API_VERSIONS = ( '0.9', '0.10' )
 
 # TODO: move backoff delay and retries to cinp client
 DELAY_MULTIPLIER = 15
@@ -44,8 +44,8 @@ class MCP( object ):
         _backOffDelay( count )
         logging.warn( 'MCP: getRequest: retry {0}'.format( count ) )
 
-    if root[ 'api-version' ] != API_VERSION:
-      raise Exception( 'Expected API version "{0}" found "{1}"'.format( API_VERSION, root[ 'api-version' ] ) )
+    if root[ 'api-version' ] not in MCP_API_VERSIONS:
+      raise Exception( 'Expected API version (one of) "{0}" found "{1}"'.format( MCP_API_VERSIONS, root[ 'api-version' ] ) )
 
   def contractorInfo( self ):
     logging.info( 'MCP: Get Contractor Info' )
