@@ -21,6 +21,9 @@ else
 	./setup.py install --root $(DESTDIR) --prefix=/usr --no-compile -O0
 endif
 
+version:
+	echo $(VERSION)
+
 clean:
 	./setup.py clean
 	$(RM) -fr build
@@ -36,7 +39,7 @@ dist-clean: clean
 	$(RM) -f dpkg-setup
 	$(RM) -f rpm-setup
 
-.PHONY:: all install clean dist-clean
+.PHONY:: all install version clean dist-clean
 
 test-distros:
 	echo ubuntu-xenial
