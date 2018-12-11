@@ -34,11 +34,11 @@ def testTarget( state, mcp, args, extra_env ):
   return True
 
 
-def buildTarget( state, mcp, packrat, args, extra_env, store_packages ):
+def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs ):
   logging.info( 'targets: executing target build - "{0}"'.format( state[ 'target' ] ) )
   mcp.sendMessage( 'Building Package(s)' )
   try:
-    target_results = runMake( '{0} {1}'.format( state[ 'target' ], ' '.join( args ) ), state[ 'dir' ], extra_env=extra_env )
+    target_results = runMake( '{0} -j{1} {2}'.format( state[ 'target' ], num_jobs, ' '.join( args ) ), state[ 'dir' ], extra_env=extra_env )
   except MakeException as e:
     logging.warn( 'targets: error with build - "{0}"'.format( state[ 'target' ] ) )
     mcp.setResults( state[ 'target' ], 'Error with target build - "{0}": "{1}"'.format( state[ 'target' ], e ) )
