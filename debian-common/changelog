@@ -1,3 +1,9 @@
+nullunit (0.29-1) DIST; urgency=medium
+
+  * Detect the cpu core count and pass that as -j for the target build
+
+ -- Peter Howe <peter.howe@virtustream.com>  Thu, 13 Dec 2018 07:20:52 -0700
+
 nullunit (0.28-1) DIST; urgency=medium
 
   * Bumped added MCP version 0.10

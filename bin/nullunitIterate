@@ -7,6 +7,7 @@ import logging
 import configparser
 import signal
 import time
+import multiprocessing
 from logging.handlers import SysLogHandler
 
 from nullunit.common import getConfig, getMCP, PACKAGE_MANAGER
@@ -130,7 +131,7 @@ while cont:
   open_output( '/tmp/nullunitIterate_debug.{0}.{1}.log'.format( os.getpid(), counter ) )
 
   try:
-    doStep( state, mcp, config )
+    doStep( state, mcp, config, multiprocessing.cpu_count() )
   except Exception as e:
     logging.exception( 'Unhandled Exception in doStep for "{0}".'.format( state[ 'state' ] ) )
     mcp.sendMessage( 'Unhandled Exception: ({0}) "{1}"'.format( e.__class__.__name__, e ) )

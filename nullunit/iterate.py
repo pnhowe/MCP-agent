@@ -51,7 +51,7 @@ def writeState( file, state ):
   open( file, 'w' ).write( json.dumps( state ) )
 
 
-def doStep( state, mcp, config ):
+def doStep( state, mcp, config, num_jobs ):
   start_state = state[ 'state' ]
   mcp.sendMessage( 'Executing Stage "{0}"'.format( start_state ) )
   logging.info( 'iterate: Executing Stage "{0}"'.format( start_state ) )
@@ -79,7 +79,7 @@ def doStep( state, mcp, config ):
       mcp.setSuccess( False )
 
   elif start_state == 'target':
-    if doTarget( state, mcp, config ):
+    if doTarget( state, mcp, config, num_jobs ):
       state[ 'state' ] = 'done'
       mcp.setSuccess( True )
     else:
@@ -223,7 +223,7 @@ def doRequires( state, mcp, config ):
   return True
 
 
-def doTarget( state, mcp, config ):
+def doTarget( state, mcp, config, num_jobs ):
   args = []
   args.append( 'NULLUNIT=1' )
 
@@ -258,7 +258,7 @@ def doTarget( state, mcp, config ):
       raise Exception( 'iterate: Error Connecting to packrat' )
 
     try:
-      return buildTarget( state, mcp, packrat, args, extra_env, config.getboolean( 'mcp', 'store_packages' ) )
+      return buildTarget( state, mcp, packrat, args, extra_env, config.getboolean( 'mcp', 'store_packages' ), num_jobs )
     finally:
       packrat.logout()
 
