@@ -205,20 +205,20 @@ def doRequires( state, mcp, config ):
     logging.error( 'ExecutionException "{0}" while updating packaging info for required packages' )
     raise Exception( 'Exception "{0}" while updating packaging info for required packages' )
 
-  for required in required_list:
-    logging.info( 'iterate: installing "{0}"'.format( required ) )
-    try:
-      if PACKAGE_MANAGER == 'apt':
-        execute( '/usr/bin/apt-get install -y {0}'.format( required ) )
-      elif PACKAGE_MANAGER == 'yum':
-        execute( '/usr/bin/yum install -y {0}'.format( required ) )
+  logging.info( 'iterate: installing "{0}"'.format( required_list ) )
+  try:
+    if PACKAGE_MANAGER == 'apt':
+      execute( '/usr/bin/apt-get install -y {0}'.format( ' '.join( required_list ) ) )
+    elif PACKAGE_MANAGER == 'yum':
+      execute( '/usr/bin/yum install -y {0}'.format( ' '.join( required_list ) ) )
+      for required in required_list:
         execute( '/usr/bin/rpm --query {0}'.format( required ) )
-      else:
-        raise Exception( 'Unknown Package manager "{0}"'.format( PACKAGE_MANAGER ) )
+    else:
+      raise Exception( 'Unknown Package manager "{0}"'.format( PACKAGE_MANAGER ) )
 
-    except ExecutionException as e:
-      logging.error( 'ExecutionException "{0}" while installing required packages'.format( e ) )
-      raise Exception( 'Exception "{0}" while installing required packages'.format( e ) )
+  except ExecutionException as e:
+    logging.error( 'ExecutionException "{0}" while installing required packages'.format( e ) )
+    raise Exception( 'Exception "{0}" while installing required packages'.format( e ) )
 
   return True
 

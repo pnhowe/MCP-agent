@@ -65,10 +65,19 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
 
   mcp.sendMessage( 'Uploading Package(s)' )
   for filename in filename_list:
+    distro_version = None
+    file_type = None
+    parts = filename.split( ';' )
     try:
-      ( filename, version ) = filename.split( ':' )
+      filename, tmp = parts
+      parts = tmp.split( ':' )
+      try:
+        distro_version, file_type = parts
+      except ValueError:
+        distro_version = parts[0]
+
     except ValueError:
-      version = None
+      filename = parts[0]
 
     if filename[0] != '/':  # it's not an aboslute path, prefix is with the working dir
       filename = os.path.realpath( os.path.join( state[ 'dir' ], filename ) )
@@ -82,7 +91,13 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
     logging.info( 'iterate: uploading "{0}"'.format( filename ) )
     src = open( filename, 'rb' )
     try:
-      result = packrat.addPackageFile( src, 'Package File "{0}"'.format( os.path.basename( filename ) ), 'MCP Auto Build from {0}.  Build on {1} at {2}'.format( state[ 'url' ], socket.getfqdn(), datetime.utcnow() ), version )
+      result = packrat.addPackageFile(
+                                       src,
+                                       'Package File "{0}"'.format( os.path.basename( filename ) ),
+                                       'MCP Auto Build from {0}.  Build on {1} at {2}'.format( state[ 'url' ], socket.getfqdn(), datetime.utcnow() ),
+                                       distro_version,
+                                       file_type
+                                     )
 
     except Exception as e:
       result = e

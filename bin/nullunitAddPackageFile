@@ -13,6 +13,7 @@ oparser.add_option( '-v', '--verbose', dest='verbose', default=False, action='st
 oparser.add_option( '-d', '--distro', help='Set the distro, needed when packrat is unable to auto-detect the distro (optional)', dest='distro', default=None )
 oparser.add_option( '-j', '--justification', help='Justification for the package file', dest='justification', default=None )
 oparser.add_option( '-p', '--provenance', help='Provenance for the package file', dest='provenance', default=None )
+oparser.add_option( '-t', '--type', help='Specify the type of the file, ie: deb, respkg, ova, etc..., if not specified packrat will auto-detect it.', dest='type', default=None )
 
 ( options, args ) = oparser.parse_args()
 
@@ -35,7 +36,7 @@ if not packrat:
   sys.exit( 1 )
 
 file = open( args[0], 'rb' )
-result = packrat.addPackageFile( file, options.justification, options.provenance, options.distro )
+result = packrat.addPackageFile( file, options.justification, options.provenance, options.distro, options.type )
 file.close()
 
 if isinstance( result, list ):
