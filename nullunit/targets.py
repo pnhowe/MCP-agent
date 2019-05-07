@@ -65,16 +65,16 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
 
   mcp.sendMessage( 'Uploading Package(s)' )
   for filename in filename_list:
-    distro_version = None
+    distroversion = None
     file_type = None
     parts = filename.split( ';' )
     try:
       filename, tmp = parts
       parts = tmp.split( ':' )
       try:
-        distro_version, file_type = parts
+        distroversion, file_type = parts
       except ValueError:
-        distro_version = parts[0]
+        distroversion = parts[0]
 
     except ValueError:
       filename = parts[0]
@@ -95,7 +95,7 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
                                        src,
                                        'Package File "{0}"'.format( os.path.basename( filename ) ),
                                        'MCP Auto Build from {0}.  Build on {1} at {2}'.format( state[ 'url' ], socket.getfqdn(), datetime.utcnow() ),
-                                       distro_version,
+                                       distroversion,
                                        file_type
                                      )
 

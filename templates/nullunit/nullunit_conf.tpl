@@ -7,6 +7,7 @@ host: {{ mcp_host }}
 proxy: {{ mcp_proxy }}
 job_id: {{ mcp_job_id }}
 instance_id: {{ mcp_instance_id }}
+build_name: {{ mcp_build_name }}
 instance_cookie: {{ mcp_instance_cookie }}
 resource_name: {{ mcp_resource_name }}
 resource_index: {{ mcp_resource_index }}

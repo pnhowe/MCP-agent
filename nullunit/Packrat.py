@@ -47,7 +47,7 @@ class Packrat( object ):
     distroversion_list = self.cinp.call( '/api/v2/Package/PackageFile(distroversionOptions)', { 'file': file_uri } )
     if distroversion is not None:
       if distroversion not in distroversion_list:
-        raise Exception( 'distroversion "{0}" not in aviable distroverison list "{1}"'.formaT( distroversion, distroversion_list ) )
+        raise Exception( 'distroversion "{0}" not in aviable distroverison list "{1}"'.format( distroversion, distroversion_list ) )
     else:
       if len( distroversion_list ) != 1:
         raise Exception( 'Unable to auto-detect distroversion, options: "{0}"'.format( distroversion_list ) )

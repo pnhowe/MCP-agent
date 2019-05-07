@@ -226,6 +226,7 @@ def doRequires( state, mcp, config ):
 def doTarget( state, mcp, config, num_jobs ):
   args = []
   args.append( 'NULLUNIT=1' )
+  args.append( 'BUILD_NAME={0}'.format( config.get( 'mcp', 'build_name' ) ) )
 
   extra_env = {}
   proxy = config.get( 'misc', 'proxy_env_var' )
