@@ -1,7 +1,11 @@
 *.pyc
 build
-debian
+/debian
+/rpmbuild
 .cache
 dpkg
+dpkg-setup
+rpm
+rpm-setup
 .coverage
 htmlcov

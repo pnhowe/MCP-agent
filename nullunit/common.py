@@ -80,7 +80,7 @@ def getContractor( mcp ):
 
 def getPackrat( config ):
   try:
-    return Packrat( config.get( 'packrat', 'host' ), config.get( 'packrat', 'proxy' ), config.get( 'packrat', 'name' ), config.get( 'packrat', 'psk' ) )
+    return Packrat( config.get( 'packrat', 'host' ), config.get( 'packrat', 'proxy' ), config.get( 'packrat', 'name' ), config.get( 'packrat', 'password' ) )
   except configparser.Error:
     logging.error( 'Error retreiving Packrat host, and/or proxy from config file' )
     return None
