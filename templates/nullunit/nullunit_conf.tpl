@@ -29,7 +29,7 @@ target: {{ mcp_make_target }}
 host: {{ packrat_host }}
 proxy: {{ packrat_proxy }}
 name: {{ packrat_builder_name }}
-psk: {{ packrat_builder_psk }}
+password: {{ packrat_builder_password }}
 
 [confluence]
 host: {{ confluence_host }}

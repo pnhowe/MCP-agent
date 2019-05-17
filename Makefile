@@ -79,12 +79,11 @@ rpm-distros:
 
 rpm-requires:
 	echo rpm-build
-ifeq (centos, $(DISTRO))
 ifeq (6, $(DISTRO_MAJOR_VERSION))
 	echo python34-setuptools
-endif
-endif
+else
 	echo python36-setuptools
+endif
 
 rpm-setup:
 	./rpmbuild-setup
