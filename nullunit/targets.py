@@ -65,7 +65,7 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
 
   mcp.sendMessage( 'Uploading Package(s)' )
   for filename in filename_list:
-    
+
     parts = filename.split( ':' )
     filename = parts.pop( 0 )
     try:
