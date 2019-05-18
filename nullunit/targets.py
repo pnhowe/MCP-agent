@@ -65,19 +65,18 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
 
   mcp.sendMessage( 'Uploading Package(s)' )
   for filename in filename_list:
-    distroversion = None
-    file_type = None
-    parts = filename.split( ';' )
+    
+    parts = filename.split( ':' )
+    filename = parts.pop( 0 )
     try:
-      filename, tmp = parts
-      parts = tmp.split( ':' )
-      try:
-        distroversion, file_type = parts
-      except ValueError:
-        distroversion = parts[0]
+      distroversion = parts.pop( 0 )
+    except IndexError:
+      distroversion = None
 
-    except ValueError:
-      filename = parts[0]
+    try:
+      file_type = parts.pop( 0 )
+    except IndexError:
+      file_type = None
 
     if filename[0] != '/':  # it's not an aboslute path, prefix is with the working dir
       filename = os.path.realpath( os.path.join( state[ 'dir' ], filename ) )
