@@ -1,3 +1,9 @@
+nullunit (0.32-1) DIST; urgency=medium
+
+  * filepath with distroversion and type reworked
+
+ -- Peter Howe <peter.howe@virtustream.com>  Fri, 17 May 2019 22:26:51 -0600
+
 nullunit (0.31-1) DIST; urgency=medium
 
   * packrat psk renamed to password
