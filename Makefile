@@ -25,10 +25,11 @@ version:
 	echo $(VERSION)
 
 clean:
-	./setup.py clean
+	./setup.py clean || true
 	$(RM) -fr build
 	$(RM) -f dpkg
 	$(RM) -f rpm
+	$(RM) -r htmlcov
 ifeq (ubuntu, $(DISTRO))
 	dh_clean || true
 endif
@@ -45,7 +46,7 @@ test-distros:
 	echo ubuntu-xenial
 
 test-requires:
-	echo flake8 python3-cinp python3-dev python3-setuptools python3-pytest python3-pytest-cov
+	echo flake8 python3-cinp python3-dev python3-pytest python3-pytest-cov
 
 lint:
 	flake8 --ignore=E501,E201,E202,E111,E126,E114,E402,W605 --statistics .
@@ -97,3 +98,26 @@ rpm-file:
 	echo $(shell ls rpmbuild/RPMS/*/nullunit-*.rpm)
 
 .PHONY:: rpm-distros rpm-requires rpm-file
+
+auto-builds:
+	echo saninity
+
+saninity-depends:
+	echo nullunit:dev
+
+saninity-resources:
+	echo trusty:1:ubuntu-trusty-small
+	echo xenail:1:ubuntu-xenial-small
+	echo bionic:1:ubuntu-bionic-small
+	echo centos6:1:centos-6-small
+	echo centos7:1:centos-7-small
+
+saninity:
+ifeq (ubuntu, $(DISTRO))
+	apt install -y nullunit
+else
+	yum install -y nullunit
+endif
+	touch saninity
+
+.PHONY:: auto-builds saninity-depends saninity-resources

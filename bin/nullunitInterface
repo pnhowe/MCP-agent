@@ -32,7 +32,6 @@ oparser.add_option( '-v', '--verbose', dest='verbose', default=False, action='st
 
 # job contoll
 ogroup = OptionGroup( oparser, 'Job Control Options', 'Affects the job this instance is a part of' )
-ogroup.add_option(       '--signal-ran', help='Signal the job has been Run', dest='signal_ran', default=False, action='store_true' )
 ogroup.add_option(       '--get-keyval', help='get value from job value_map, will be regex matched', dest='get_keyval', type='string' )
 ogroup.add_option(       '--set-keyval', help='set the job value_map key to value, can be specified multiple times (ie: --set-keyval=mykey:myvalue), if value starts with { or [ it will be treated as JSON. Tip: you may have to wrap in \'\' ie: \'--set-keyval=myval=[ "stuff", "here" ]\'', dest='set_keyval', type='string', action='append' )
 oparser.add_option_group( ogroup )
@@ -80,10 +79,6 @@ if not mcp:
   sys.exit( 1 )
 
 # job control
-if options.signal_ran:
-  mcp.signalJobRan()
-  sys.exit( 0 )
-
 if options.set_keyval:
   value_map = {}
   for item in options.set_keyval:

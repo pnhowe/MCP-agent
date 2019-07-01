@@ -120,10 +120,8 @@ if state is None:
 counter = 0
 while cont:
   if state[ 'state' ] in ( 'done', 'failed' ):
-    if config.get( 'make', 'target' ) in ( 'test', 'dpkg', 'respkg', 'rpm', 'resource', 'doc' ):
-      logging.info( 'Signaling Job Ran' )
-      mcp.signalJobRan()
-
+    logging.info( 'Signaling Job Ran' )
+    mcp.signalJobRan()
     logging.info( 'Task Complete' )
     break
 
