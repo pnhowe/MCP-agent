@@ -1,3 +1,10 @@
+nullunit (0.33-1) DIST; urgency=medium
+
+  * MCP now detects when the job is done, remove extra target detection
+    and manual signaling
+
+ -- Peter Howe <peter.howe@virtustream.com>  Mon, 01 Jul 2019 14:37:29 -0600
+
 nullunit (0.32-1) DIST; urgency=medium
 
   * filepath with distroversion and type reworked
