@@ -100,24 +100,24 @@ rpm-file:
 .PHONY:: rpm-distros rpm-requires rpm-file
 
 auto-builds:
-	echo saninity
+	echo installcheck
 
-saninity-depends:
+installcheck-depends:
 	echo nullunit:dev
 
-saninity-resources:
+installcheck-resources:
 	echo trusty:1:ubuntu-trusty-small
 	echo xenail:1:ubuntu-xenial-small
 	echo bionic:1:ubuntu-bionic-small
 	echo centos6:1:centos-6-small
 	echo centos7:1:centos-7-small
 
-saninity:
+installcheck:
 ifeq (ubuntu, $(DISTRO))
 	apt install -y nullunit
 else
 	yum install -y nullunit
 endif
-	touch saninity
+	touch installcheck
 
-.PHONY:: auto-builds saninity-depends saninity-resources
+.PHONY:: auto-builds installcheck-depends installcheck-resources

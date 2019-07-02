@@ -192,6 +192,9 @@ def doRequires( state, mcp, config ):
 
   required_list = list( set( itertools.chain.from_iterable( [ i.split() for i in required_list ] ) ) )
 
+  if not required_list:
+    return True
+
   logging.info( 'iterate: updating pkg metadata' )
   try:
     if PACKAGE_MANAGER == 'apt':
