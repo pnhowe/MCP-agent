@@ -1,6 +1,7 @@
 nullunit (0.34-1) DIST; urgency=medium
 
   * bug fix for targets without requirements
+  * reworking file uploading to packrat handeling
 
  -- Peter Howe <peter.howe@virtustream.com>  Tue, 02 Jul 2019 11:14:44 -0600
 

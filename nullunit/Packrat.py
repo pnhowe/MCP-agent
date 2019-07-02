@@ -48,6 +48,7 @@ class Packrat( object ):
     if distroversion is not None:
       if distroversion not in distroversion_list:
         raise Exception( 'distroversion "{0}" not in aviable distroverison list "{1}"'.format( distroversion, distroversion_list ) )
+
     else:
       if len( distroversion_list ) != 1:
         raise Exception( 'Unable to auto-detect distroversion, options: "{0}"'.format( distroversion_list ) )
