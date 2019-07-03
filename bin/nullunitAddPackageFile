@@ -35,19 +35,17 @@ packrat = getPackrat( config )
 if not packrat:
   sys.exit( 1 )
 
-file = open( args[0], 'rb' )
-result = packrat.addPackageFile( file, options.justification, options.provenance, options.distro, options.type )
-file.close()
+try:
+  file = open( args[0], 'rb' )
+  result = packrat.addPackageFile( file, options.justification, options.provenance, options.distro, options.type )
+  file.close()
+
+finally:
+  packrat.logout()
 
 if isinstance( result, list ):
   print( 'Unable to auto detect distro, re-call passing -d with one of the following "{0}"'.format( result ) )
-  packrat.logout()
   sys.exit( 1 )
 
-if result is not None:
-  print( 'Unexpected result "{0}"'.format( result ) )
-  packrat.logout()
-  sys.exit( 1 )
-
-packrat.logout()
+print( 'Uploaded, package file id: "{0}"'.format( result ) )
 sys.exit( 0 )

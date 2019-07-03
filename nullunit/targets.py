@@ -58,14 +58,13 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
     mcp.setResults( state[ 'target' ], 'Error getting {0}-file: {1}'.format( state[ 'target' ], e ) )
     return False
 
-  package_file_list = []
   filename_list = []
   for line in results:
     filename_list += line.split()
 
+  status_map = {}
   mcp.sendMessage( 'Uploading Package(s)' )
   for filename in filename_list:
-
     parts = filename.split( ':' )
     filename = parts.pop( 0 )
     try:
@@ -82,15 +81,13 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
       filename = os.path.realpath( os.path.join( state[ 'dir' ], filename ) )
 
     if packrat.checkFileName( os.path.basename( filename ) ):
-      mcp.setResults( state[ 'target' ], 'Filename "{0}" is allready in use in packrat, skipping the file in upload.'.format( os.path.basename( filename ) ) )
-      logging.warn( 'targets: filename "{0}" allready on packrat, skipping...'.format( os.path.basename( filename ) ) )
-      target_results.append( '=== File "{0}" skipped.'.format( os.path.basename( filename ) ) )
+      status_map[ filename ] = '*EXISTS*'
       continue
 
     logging.info( 'iterate: uploading "{0}"'.format( filename ) )
     src = open( filename, 'rb' )
     try:
-      result = packrat.addPackageFile(
+      status_map[ os.path.basename( filename ) ] = packrat.addPackageFile(
                                        src,
                                        'Package File "{0}"'.format( os.path.basename( filename ) ),
                                        'MCP Auto Build from {0}.  Build on {1} at {2}'.format( state[ 'url' ], socket.getfqdn(), datetime.utcnow() ),
@@ -99,31 +96,44 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
                                      )
 
     except Exception as e:
-      result = e
+      status_map[ os.path.basename( filename ) ] = e
 
     finally:
       src.close()
 
-    if isinstance( result, list ):
-      raise Exception( 'Packrat was unable to detect distro, options are "{0}"'.format( result ) )
+  package_file_map = {}
 
-    if result is not None:
-      mcp.sendMessage( 'Packge(s) NOT (all) Uploaded: result "{0}"'.format( result ) )
-      mcp.setResults( state[ 'target' ], '\n'.join( target_results ) )  # yes we do it a second time, now it has the files uploaded appended
-      mcp.uploadedPackages( package_file_list )
-      return False
+  result = True
+  for filename, status in status_map.items():
+    if isinstance( status, list ):
+      logging.warn( 'targets: Packrat was unable to detect distro for "{0}", options are "{1}".'.format( filename, status ) )
+      target_results.append( '=== File "{0}" Unable to Detect Distro, options "{1}", skipped.'.format( filename, status ) )
+      result = False
 
-    target_results.append( '=== File "{0}" uploaded.'.format( os.path.basename( filename ) ) )
-    package_file_list.append( os.path.basename( filename ) )
+    elif isinstance( status, Exception ):
+      status = str( status )
+      logging.warn( 'targets: filename "{0}" erroro uploading: "{1}", skipped.'.format( filename, status ) )
+      target_results.append( '=== File "{0}" Error Uploading: "{1}", skipped.'.format( filename, status ) )
+      result = False
 
-  for package_file in package_file_list:
-    if not packrat.checkFileName( package_file ):
-      raise Exception( 'Recently added file "{0}" not showing in packrat.'.format( package_file ) )
+    elif status == '*EXISTS*':
+      logging.warn( 'targets: filename "{0}" allready on packrat, skipped.'.format( filename ) )
+      target_results.append( '=== File "{0}" Allready Exists, skipped.'.format( filename ) )
 
-  mcp.setResults( state[ 'target' ], '\n'.join( target_results ) )  # yes we do it a second time, now it has the files uploaded appended
-  mcp.uploadedPackages( package_file_list )
+    else:
+      logging.info( 'targets: filename "{0}" uploaded.'.format( filename ) )
+      target_results.append( '=== File "{0}" uploaded.'.format( filename ) )
+      package_file_map[ filename ] = status
 
-  return True
+  if result:
+    mcp.sendMessage( 'No Errors uploading Files' )
+  else:
+    mcp.sendMessage( '"{0}" of "{1}" Files did not upload, see results for details'.format( len( status_map ) - len( package_file_map ), len( status_map ) ) )
+
+  mcp.setResults( state[ 'target' ], '\n'.join( target_results ) )  # update results now that we have upload status
+  mcp.uploadedPackages( package_file_map )
+
+  return result
 
 
 def docTarget( state, mcp, confluence, args, extra_env ):
