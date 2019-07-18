@@ -106,11 +106,11 @@ installcheck-depends:
 	echo nullunit:dev
 
 installcheck-resources:
-	echo trusty:1:ubuntu-trusty-small
-	echo xenail:1:ubuntu-xenial-small
-	echo bionic:1:ubuntu-bionic-small
-	echo centos6:1:centos-6-small
-	echo centos7:1:centos-7-small
+	echo trusty:{ \"resource_name\": \"ubuntu-trusty-small\" }
+	echo xenail:{ \"resource_name\": \"ubuntu-xenial-small\" }
+	echo bionic:{ \"resource_name\": \"ubuntu-bionic-small\" }
+	echo centos6:{ \"resource_name\": \"centos-6-small\" }
+	echo centos7:{ \"resource_name\": \"centos-7-small\" }
 
 installcheck:
 ifeq (ubuntu, $(DISTRO))
