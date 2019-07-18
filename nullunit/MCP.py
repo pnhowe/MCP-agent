@@ -81,11 +81,11 @@ class MCP( object ):
 
     self.cinp.call( '/api/v1/Processor/Instance:{0}:(setScore)'.format( self.instance_id ), { 'cookie': self.cookie, 'target': target, 'score': score } )
 
-  def uploadedPackages( self, package_files ):
-    if not package_files:
+  def uploadedPackages( self, package_file_map ):
+    if not package_file_map:
       return
 
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(addPackageFiles)'.format( self.instance_id ), { 'cookie': self.cookie, 'package_files': package_files } )
+    self.cinp.call( '/api/v1/Processor/Instance:{0}:(addPackageFiles)'.format( self.instance_id ), { 'cookie': self.cookie, 'package_file_map': package_file_map } )
 
   def getInstanceState( self, name=None ):
     logging.info( 'MCP: Instance State for "{0}"'.format( name ) )
