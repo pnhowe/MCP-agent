@@ -5,7 +5,7 @@ import shutil
 import logging
 import time
 import itertools
-from nullunit.common import GIT_CMD, WORK_DIR, PACKAGE_MANAGER, getPackrat, getContractor, runMake, MakeException
+from nullunit.common import GIT_CMD, WORK_DIR, PACKAGE_MANAGER, getPackrat, getContractor, getConfluence, runMake, MakeException
 from nullunit.procutils import execute, ExecutionException
 from nullunit.targets import testTarget, buildTarget, docTarget, otherTarget
 
@@ -267,7 +267,7 @@ def doTarget( state, mcp, config, num_jobs ):
       packrat.logout()
 
   elif state[ 'target' ] == 'doc':
-    confluence = None
+    confluence = getConfluence()
     return docTarget( state, mcp, confluence, args, extra_env )
 
   return otherTarget( state, mcp, args, extra_env )

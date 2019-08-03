@@ -6,6 +6,7 @@ import os
 from nullunit.MCP import MCP
 from nullunit.Contractor import Contractor
 from nullunit.Packrat import Packrat
+from nullunit.Confluence import Confluence
 from nullunit.procutils import execute_lines_rc
 
 
@@ -81,6 +82,14 @@ def getContractor( mcp ):
 def getPackrat( config ):
   try:
     return Packrat( config.get( 'packrat', 'host' ), config.get( 'packrat', 'proxy' ), config.get( 'packrat', 'name' ), config.get( 'packrat', 'password' ) )
+  except configparser.Error:
+    logging.error( 'Error retreiving Packrat host, and/or proxy from config file' )
+    return None
+
+
+def getConfluence( config ):
+  try:
+    return Confluence( config.get( 'confluence', 'host' ), config.get( 'confluence', 'proxy' ), config.get( 'confluence', 'username' ), config.get( 'confluence', 'password' ) )
   except configparser.Error:
     logging.error( 'Error retreiving Packrat host, and/or proxy from config file' )
     return None
