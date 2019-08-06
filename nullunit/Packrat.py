@@ -21,16 +21,15 @@ class KeepAlive( Thread ):
 
 
 class Packrat( object ):
-  def __init__( self, host, proxy, name, password ):
-    self.name = name
+  def __init__( self, host, proxy, username, password ):
     self.cinp = client.CInP( host, '/api/v2/', proxy )
 
     root = self.cinp.describe( '/api/v2/' )
     if root[ 'api-version' ] != PACKRAT_API_VERSION:
       raise Exception( 'Expected API version "{0}" found "{1}"'.format( PACKRAT_API_VERSION, root[ 'api-version' ] ) )
 
-    self.token = self.cinp.call( '/api/v2/Auth/User(login)', { 'username': self.name, 'password': password } )
-    self.cinp.setAuth( name, self.token )
+    self.token = self.cinp.call( '/api/v2/Auth/User(login)', { 'username': username, 'password': password } )
+    self.cinp.setAuth( username, self.token )
     # self.keepalive = KeepAlive( self.cinp )
     # self.keepalive.start()
 

@@ -34,7 +34,7 @@ def testTarget( state, mcp, args, extra_env ):
   return True
 
 
-def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs ):
+def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs, project, version, build ):
   logging.info( 'targets: executing target build - "{0}"'.format( state[ 'target' ] ) )
   mcp.sendMessage( 'Building Package(s)' )
   try:
@@ -90,7 +90,7 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
       status_map[ os.path.basename( filename ) ] = packrat.addPackageFile(
                                        src,
                                        'Package File "{0}"'.format( os.path.basename( filename ) ),
-                                       'MCP Auto Build from {0}.  Build on {1} at {2}'.format( state[ 'url' ], socket.getfqdn(), datetime.utcnow() ),
+                                       'MCP Auto Build.  For project "{0}", version: "{1}", build: "{2}", on "{3}" at "{4}"'.format( project, version, build, socket.getfqdn(), datetime.utcnow() ),
                                        distroversion,
                                        file_type
                                      )
@@ -136,7 +136,7 @@ def buildTarget( state, mcp, packrat, args, extra_env, store_packages, num_jobs 
   return result
 
 
-def docTarget( state, mcp, confluence, args, extra_env ):
+def docTarget( state, mcp, confluence, args, extra_env, project, version, build ):
   logging.info( 'targets: executing target "{0}"'.format( state[ 'target' ] ) )
   try:
     target_results = runMake( 'doc {0}'.format( ' '.join( args ) ), state[ 'dir' ], extra_env=extra_env )
@@ -152,13 +152,15 @@ def docTarget( state, mcp, confluence, args, extra_env ):
     mcp.setResults( 'doc', 'Error getting doc-file: {0}'.format( e ) )
     return False
 
+  comment = 'Added by MCP for project "{0}", version: "{1}", build: "{2}", on "{3}" at "{4}"'.format( project, version, build, socket.getfqdn(), datetime.utcnow() )
+
   filename_list = []
   for line in results:
     filename_list += line.split()
 
   for filename in filename_list:
     ( local_filename, confluence_filename ) = filename.split( ':' )
-    confluence.upload( local_filename, confluence_filename )
+    confluence.upload( local_filename, confluence_filename, comment )
 
   return True
 

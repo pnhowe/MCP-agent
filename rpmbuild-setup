@@ -34,7 +34,7 @@ Version:        $VERSION
 Release:        $RELEASE.$DISTRO_RELEASE
 License:        Nonfree
 Group:          multiverse/python
-Requires:       $PYTHON_REQUIRES, python3-cinp, /usr/sbin/crond, git, make, config-curator, redhat-lsb-core
+Requires:       $PYTHON_REQUIRES, python3-cinp, python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}-urllib3, /usr/sbin/crond, git, make, config-curator, redhat-lsb-core
 BuildArch:      noarch
 
 %description
