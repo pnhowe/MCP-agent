@@ -231,6 +231,10 @@ def doTarget( state, mcp, config, num_jobs ):
   args.append( 'NULLUNIT=1' )
   args.append( 'BUILD_NAME={0}'.format( config.get( 'mcp', 'build_name' ) ) )
 
+  project = config.get( 'mcp', 'project_name' )
+  version = config.get( 'mcp', 'project_version' )
+  build = config.get( 'mcp', 'build_name' )
+
   extra_env = {}
   proxy = config.get( 'misc', 'proxy_env_var' )
   if not proxy:
@@ -256,18 +260,18 @@ def doTarget( state, mcp, config, num_jobs ):
   if state[ 'target' ] == 'test':
     return testTarget( state, mcp, args, extra_env )
 
-  elif _isPackageBuild( state[ 'target'] ):
+  elif _isPackageBuild( state[ 'target' ] ):
     packrat = getPackrat( config )  # connect to Packrat first, just in case there is a problem, then we know right up front
     if not packrat:
       raise Exception( 'iterate: Error Connecting to packrat' )
 
     try:
-      return buildTarget( state, mcp, packrat, args, extra_env, config.getboolean( 'mcp', 'store_packages' ), num_jobs )
+      return buildTarget( state, mcp, packrat, args, extra_env, config.getboolean( 'mcp', 'store_packages' ), num_jobs, project, version, build )
     finally:
       packrat.logout()
 
   elif state[ 'target' ] == 'doc':
-    confluence = getConfluence()
-    return docTarget( state, mcp, confluence, args, extra_env )
+    confluence = getConfluence( config )
+    return docTarget( state, mcp, confluence, args, extra_env, project, version, build )
 
   return otherTarget( state, mcp, args, extra_env )

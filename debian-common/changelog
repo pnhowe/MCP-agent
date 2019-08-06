@@ -1,4 +1,12 @@
-nullunit (0.36.0-1) DIST; urgency=medium
+nullunit (0.37-1) DIST; urgency=medium
+
+  * goes with MCP 0.20
+  * new config file location
+  * documentation updates
+
+ -- Peter Howe <peter.howe@virtustream.com>  Tue, 06 Aug 2019 16:14:02 -0600
+
+nullunit (0.36-1) DIST; urgency=medium
 
   * Adding Doc support
 

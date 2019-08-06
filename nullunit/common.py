@@ -10,7 +10,7 @@ from nullunit.Confluence import Confluence
 from nullunit.procutils import execute_lines_rc
 
 
-CONFIG_FILE = '/etc/mcp/nullunit.conf'
+CONFIG_FILE = '/etc/nullunit.conf'
 MAKE_CMD = '/usr/bin/make'
 GIT_CMD = '/usr/bin/git'
 WORK_DIR = '/nullunit/src'  # if the dir is a ends in src, it will make go and it's GOPATH happy
@@ -54,7 +54,7 @@ def runMake( cmd, dir, extra_env=None ):
 
 
 def getConfig():
-  config = configparser.ConfigParser()
+  config = configparser.ConfigParser( interpolation=None )
 
   try:
     config.read( CONFIG_FILE )
@@ -81,7 +81,7 @@ def getContractor( mcp ):
 
 def getPackrat( config ):
   try:
-    return Packrat( config.get( 'packrat', 'host' ), config.get( 'packrat', 'proxy' ), config.get( 'packrat', 'name' ), config.get( 'packrat', 'password' ) )
+    return Packrat( config.get( 'packrat', 'host' ), config.get( 'packrat', 'proxy' ), config.get( 'packrat', 'username' ), config.get( 'packrat', 'password' ) )
   except configparser.Error:
     logging.error( 'Error retreiving Packrat host, and/or proxy from config file' )
     return None
@@ -91,5 +91,5 @@ def getConfluence( config ):
   try:
     return Confluence( config.get( 'confluence', 'host' ), config.get( 'confluence', 'proxy' ), config.get( 'confluence', 'username' ), config.get( 'confluence', 'password' ) )
   except configparser.Error:
-    logging.error( 'Error retreiving Packrat host, and/or proxy from config file' )
+    logging.error( 'Error retreiving Confluence host, and/or proxy from config file' )
     return None
