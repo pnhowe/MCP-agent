@@ -1,3 +1,9 @@
+nullunit (0.39-1) DIST; urgency=medium
+
+  * fix
+
+ -- Peter Howe <peter.howe@virtustream.com>  Thu, 08 Aug 2019 08:13:02 -0600
+
 nullunit (0.38-1) DIST; urgency=medium
 
   * confluence fixes

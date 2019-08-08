@@ -232,7 +232,7 @@ def doTarget( state, mcp, config, num_jobs ):
   args.append( 'BUILD_NAME={0}'.format( config.get( 'mcp', 'build_name' ) ) )
 
   project = config.get( 'mcp', 'project_name' )
-  version = config.get( 'mcp', 'project_version' )
+  version = config.get( 'mcp', 'commit_version' )
   build = config.get( 'mcp', 'build_name' )
 
   extra_env = {}
