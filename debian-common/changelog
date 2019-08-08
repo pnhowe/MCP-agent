@@ -1,3 +1,9 @@
+nullunit (0.38-1) DIST; urgency=medium
+
+  * confluence fixes
+
+ -- Peter Howe <peter.howe@virtustream.com>  Wed, 07 Aug 2019 23:27:51 -0600
+
 nullunit (0.37-1) DIST; urgency=medium
 
   * goes with MCP 0.20
