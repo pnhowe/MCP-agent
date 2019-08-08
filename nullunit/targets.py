@@ -159,8 +159,12 @@ def docTarget( state, mcp, confluence, args, extra_env, project, version, build 
     filename_list += line.split()
 
   for filename in filename_list:
-    ( local_filename, confluence_filename ) = filename.split( ':' )
-    confluence.upload( local_filename, confluence_filename, comment )
+    ( filename, confluence_filename ) = filename.split( ':' )
+
+    if filename[0] != '/':  # it's not an aboslute path, prefix is with the working dir
+      filename = os.path.realpath( os.path.join( state[ 'dir' ], filename ) )
+
+    confluence.upload( filename, confluence_filename, comment )
 
   return True
 

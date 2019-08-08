@@ -9,7 +9,8 @@ job_id: {{ mcp_job_id }}
 instance_id: {{ mcp_instance_id }}
 build_name: {{ mcp_build_name }}
 project_name: {{ mcp_project_name }}
-project_version: {{ mcp_project_version }}
+commit_version: {{ mcp_commit_version }}
+promotion_tag: {{ mcp_promotion_tag }}
 instance_cookie: {{ mcp_instance_cookie }}
 resource_name: {{ mcp_resource_name }}
 resource_index: {{ mcp_resource_index }}
