@@ -1,3 +1,9 @@
+nullunit (0.40-1) DIST; urgency=medium
+
+  * Confluence update attachment fix
+
+ -- Peter Howe <peter.howe@virtustream.com>  Thu, 08 Aug 2019 22:29:23 -0600
+
 nullunit (0.39-1) DIST; urgency=medium
 
   * fix
