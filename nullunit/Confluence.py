@@ -63,7 +63,7 @@ class Confluence( client.CInP ):  # we are going to cheet and barrow the proxy s
     return json.loads( str( resp.read(), 'utf-8' ) )
 
   def _getAttachment( self, filename, page ):
-    url = '{0}/rest/api/content/{1}/child/attachment?filename={2}'.formaT( self.host, page, filename )
+    url = '{0}/rest/api/content/{1}/child/attachment?filename={2}'.format( self.host, page, filename )
 
     data = self._request( url, None, {}, 'GET' )
     result_list = data[ 'results' ]
@@ -84,12 +84,14 @@ class Confluence( client.CInP ):  # we are going to cheet and barrow the proxy s
     attachment_id = self._getAttachment( filename, page )
 
     if attachment_id is None:
+      logging.debug( 'confluence: adding new attachment' )
       url = '{0}/rest/api/content/{1}/child/attachment'.format( self.host, page )
     else:
-      url = '{0}/rest/content/{1}/child/attachment/{2}/data'.format( self.host, page, attachment_id )
+      logging.debug( 'confluence: updating existing attachment "{0}"'.format( attachment_id) )
+      url = '{0}/rest/api/content/{1}/child/attachment/{2}/data'.format( self.host, page, attachment_id )
 
     file_reader = open( local_filepath, 'rb' )
-    fields = { 'file': ( filename, file_reader.read() ), 'comment': 'Uploaded by MCP ' }
+    fields = { 'file': ( filename, file_reader.read() ), 'comment': comment }
     file_reader.close()
     content, content_type = encode_multipart_formdata( fields )
     header_map[ 'Content-type' ] = content_type
