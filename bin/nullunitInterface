@@ -152,15 +152,8 @@ if options.primary_ip or options.hostname or options.fqdn or options.instance_co
     instance_config = contractor.getConfig( [ i[ 'structure_id' ] for i in instance_list ] )
 
     for instance in instance_config.values():
-      for interface in instance[ '_interface_map' ].values():
-        for address in interface[ 'address_list' ]:
-          if address[ 'primary' ]:
-            result.append( address[ 'address' ] )
-            break
-        else:
-          continue
-
-        break
+      if instance[ '_primary_address' ]:
+        result.append( instance[ '_primary_address' ][ 'address' ] )
 
   elif options.hostname:
     instance_config = contractor.getConfig( [ i[ 'structure_id' ] for i in instance_list ] )
