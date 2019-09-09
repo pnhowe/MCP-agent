@@ -121,8 +121,8 @@ if options.are_built:
       if options.verbose:
         print( '{0}:{1} - {2}'.format( options.name, index, state_map[ index ] ) )
 
-  # ie: if the results_list is not empty and there are not any non 'built's in it
-  if state_list and not list( filter( None, map( lambda x: x != 'built', state_list ) ) ):
+  # ie: if the results_list is not empty and there are not any non 'built'/'ran's in it
+  if state_list and not list( filter( None, map( lambda x: x not in ( 'built', 'ran' ), state_list ) ) ):
     sys.exit( 0 )
 
   sys.exit( 2 )
