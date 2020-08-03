@@ -1,7 +1,7 @@
 Source: nullunit
 Section: multiverse/python
 Priority: optional
-Maintainer: Peter Howe <peter.howe@virtustream.com>
+Maintainer: Peter Howe <pnhowe@gmail.com>
 Build-Depends: debhelper (>= 9), python3 (>= 3.4), python3-dev (>=3.4), python3-setuptools, lsb-release
 X-Python3-Version: >= 3.4
 Standards-Version: 3.8.3

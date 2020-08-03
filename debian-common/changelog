@@ -1,3 +1,9 @@
+nullunit (0.43-1) UDIST; urgency=medium
+
+  * Updates for MCP 0.23
+
+ -- Peter Howe <pnhowe@gmail.com>  Mon, 03 Aug 2020 06:54:02 -0600
+
 nullunit (0.42-1) DIST; urgency=medium
 
   * nullunitInterface fixes for mcp's auto-build change

@@ -55,15 +55,15 @@ class MCP( object ):
 
   def signalJobRan( self ):
     logging.info( 'MCP: Signal Job Ran' )
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(jobRan)'.format( self.instance_id ), { 'cookie': self.cookie } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(jobRan)'.format( self.instance_id ), { 'cookie': self.cookie } )
 
   def sendMessage( self, message ):
     logging.info( 'MCP: Message "{0}"'.format( message ) )
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(setMessage)'.format( self.instance_id ), { 'cookie': self.cookie, 'message': message } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(setMessage)'.format( self.instance_id ), { 'cookie': self.cookie, 'message': message } )
 
   def setSuccess( self, success ):
     logging.info( 'MCP: Success "{0}"'.format( success ) )
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(setSuccess)'.format( self.instance_id ), { 'cookie': self.cookie, 'success': success } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(setSuccess)'.format( self.instance_id ), { 'cookie': self.cookie, 'success': success } )
 
   def setResults( self, target, results ):
     if results is not None:
@@ -71,7 +71,7 @@ class MCP( object ):
     else:
       logging.info( 'MCP: Results <empty>' )
 
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(setResults)'.format( self.instance_id ), { 'cookie': self.cookie, 'target': target, 'results': results } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(setResults)'.format( self.instance_id ), { 'cookie': self.cookie, 'target': target, 'results': results } )
 
   def setScore( self, target, score ):
     if score is not None:
@@ -79,13 +79,13 @@ class MCP( object ):
     else:
       logging.info( 'MCP: Score <undefined>' )
 
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(setScore)'.format( self.instance_id ), { 'cookie': self.cookie, 'target': target, 'score': score } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(setScore)'.format( self.instance_id ), { 'cookie': self.cookie, 'target': target, 'score': score } )
 
   def uploadedPackages( self, package_file_map ):
     if not package_file_map:
       return
 
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(addPackageFiles)'.format( self.instance_id ), { 'cookie': self.cookie, 'package_file_map': package_file_map } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(addPackageFiles)'.format( self.instance_id ), { 'cookie': self.cookie, 'package_file_map': package_file_map } )
 
   def getInstanceState( self, name=None ):
     logging.info( 'MCP: Instance State for "{0}"'.format( name ) )
@@ -130,11 +130,11 @@ class MCP( object ):
   def updateValueMap( self, value_map  ):
     logging.info( 'MCP: Setting Value "{0}"'.format( value_map ) )
 
-    self.cinp.call( '/api/v1/Processor/Instance:{0}:(updateValueMap)'.format( self.instance_id ), { 'cookie': self.cookie, 'value_map': value_map } )
+    self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(updateValueMap)'.format( self.instance_id ), { 'cookie': self.cookie, 'value_map': value_map } )
 
     return True
 
   def getValueMap( self, name=None ):
     logging.info( 'MCP: Getting Value Map' )
 
-    return self.cinp.call( '/api/v1/Processor/Instance:{0}:(getValueMap)'.format( self.instance_id ), { 'cookie': self.cookie } )
+    return self.cinp.call( '/api/v1/Processor/BuildJobResourceInstance:{0}:(getValueMap)'.format( self.instance_id ), { 'cookie': self.cookie } )
