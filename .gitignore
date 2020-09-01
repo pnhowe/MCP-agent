@@ -9,3 +9,4 @@ rpm
 rpm-setup
 .coverage
 htmlcov
+nullunit.egg-info

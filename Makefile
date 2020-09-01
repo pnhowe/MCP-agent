@@ -60,7 +60,7 @@ dpkg-distros:
 	echo ubuntu-trusty ubuntu-xenial ubuntu-bionic
 
 dpkg-requires:
-	echo dpkg-dev debhelper python3-dev python3-setuptools
+	echo dpkg-dev debhelper python3-dev python3-setuptools dh-python
 
 dpkg-setup:
 	./debian-setup
