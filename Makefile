@@ -8,7 +8,6 @@ all:
 
 install:
 	mkdir -p $(DESTDIR)/usr/bin
-	mkdir -p $(DESTDIR)/etc/mcp
 	mkdir -p $(DESTDIR)/var/lib/config-curator/templates/nullunit/
 	install -m 755 bin/nullunitIterate $(DESTDIR)/usr/bin
 	install -m 755 bin/nullunitInterface $(DESTDIR)/usr/bin

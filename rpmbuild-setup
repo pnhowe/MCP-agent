@@ -51,7 +51,6 @@ cp debian-common/cron.d %{buildroot}/etc/cron.d/nullunit
 /usr/bin/*
 /var/lib/config-curator/templates/*
 /etc/cron.d/*
-/etc/mcp
 
 %changelog
 
