@@ -20,7 +20,7 @@ class Contractor( object ):
       return {}
 
     logging.info( 'Contractor: getConfig for "{0}"'.format( structure_id_list ) )
-    return self.cinp.call( '/api/v1/Building/Structure:{0}:(getConfig)'.format( ':'.join( structure_id_list ) ), {}, force_multi_mode=True )
+    return self.cinp.call( '/api/v1/Building/Structure:{0}:(getConfig)'.format( ':'.join( [ str( i ) for i in structure_id_list ] ) ), {}, force_multi_mode=True )
 
   def updateConfig( self, structure_id, config_value_map ):
     logging.info( 'Contractor: setConfigValues for "{0}"'.format( structure_id ) )

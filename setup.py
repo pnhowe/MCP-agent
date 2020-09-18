@@ -7,7 +7,7 @@ from setuptools import find_packages
 
 
 class build( build_py ):
-  def run( self ):
+  def build_packages( self ):
     # get all the .py files, unless they end in _test.py
     # we don't need testing files in our published product
     for package in self.packages:
@@ -24,7 +24,7 @@ setup( name='nullunit',
        description='MCP Agent',
        author='Peter Howe',
        version='0.1',
-       author_email='peter.howe@virtustream.com',
+       author_email='pnhowe@gmail.com',
        packages=find_packages(),
        cmdclass={ 'build_py': build }
        )
