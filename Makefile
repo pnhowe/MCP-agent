@@ -56,7 +56,7 @@ test:
 .PHONY:: test-blueprints test-requires lint test
 
 dpkg-blueprints:
-	echo ubuntu-trusty-base ubuntu-xenial-base ubuntu-bionic-base ubuntu-focal-base
+	echo ubuntu-xenial-base ubuntu-bionic-base ubuntu-focal-base
 
 dpkg-requires:
 	echo dpkg-dev debhelper python3-dev python3-setuptools dh-python
@@ -105,11 +105,11 @@ installcheck-depends:
 	echo nullunit:dev
 
 installcheck-resources:
-	echo trusty:{ \"resource_name\": \"ubuntu-trusty-small\" }
-	echo xenail:{ \"resource_name\": \"ubuntu-xenial-small\" }
-	echo bionic:{ \"resource_name\": \"ubuntu-bionic-small\" }
-	echo centos6:{ \"resource_name\": \"centos-6-small\" }
-	echo centos7:{ \"resource_name\": \"centos-7-small\" }
+        echo xenial:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-xenial-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
+        echo bionic:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-bionic-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
+        echo focal:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-focal-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
+        echo centos-6:{ \"resource\": \"vm\", \"blueprint\": \"centos-6-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
+        echo centos-7:{ \"resource\": \"vm\", \"blueprint\": \"centos-7-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
 
 installcheck:
 ifeq (ubuntu, $(DISTRO))
