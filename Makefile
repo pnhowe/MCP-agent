@@ -42,7 +42,7 @@ dist-clean: clean
 .PHONY:: all install version clean dist-clean
 
 test-blueprints:
-	echo ubuntu-xenial-base
+	echo ubuntu-bionic-base
 
 test-requires:
 	echo flake8 python3-cinp python3-dev python3-pytest python3-pytest-cov

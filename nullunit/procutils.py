@@ -4,6 +4,7 @@ import shlex
 import logging
 import re
 import string
+import time
 from datetime import datetime
 
 debug_stdout = None
@@ -94,7 +95,7 @@ def execute( cmd, dir=None, stdin=None, extra_env=None, retry_rc_list=None ):
     if rc == 0:
       return
 
-    if retry_rc_list is None or rc is not in retry_rc_list:
+    if retry_rc_list is None or rc not in retry_rc_list:
       break
 
     retry -= 1
