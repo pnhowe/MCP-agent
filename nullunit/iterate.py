@@ -198,7 +198,7 @@ def doRequires( state, mcp, config ):
   logging.info( 'iterate: updating pkg metadata' )
   try:
     if PACKAGE_MANAGER == 'apt':
-      execute( '/usr/bin/apt-get update' )
+      execute( '/usr/bin/apt-get update', retry_rc_list=[ 100 ] )
     elif PACKAGE_MANAGER == 'yum':
       execute( '/usr/bin/yum clean all' )
     else:

@@ -1,4 +1,10 @@
-nullunit (0.43-1) UDIST; urgency=medium
+nullunit (0.44-1) DIST; urgency=medium
+
+  * Retry "apt-get update"s
+
+ -- Peter Howe <pnhowe@gmail.com>  Fri, 23 Oct 2020 07:41:03 -0600
+
+nullunit (0.43-1) DIST; urgency=medium
 
   * Updates for MCP 0.23
 

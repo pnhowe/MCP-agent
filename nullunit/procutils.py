@@ -87,10 +87,20 @@ def _execute( cmd, dir, stdin, extra_env ):
   return ( printable.sub( '', stdout )[ -100000: ], proc.returncode )
 
 
-def execute( cmd, dir=None, stdin=None, extra_env=None ):
-  ( _, rc ) = _execute( cmd, dir, stdin, extra_env )
-  if rc != 0:
-    raise ExecutionException( 'Error Executing "{0}", rc: {1}'.format( cmd, rc ) )
+def execute( cmd, dir=None, stdin=None, extra_env=None, retry_rc_list=None ):
+  retry = 10
+  while retry:
+    ( _, rc ) = _execute( cmd, dir, stdin, extra_env )
+    if rc == 0:
+      return
+
+    if retry_rc_list is None or rc is not in retry_rc_list:
+      break
+
+    retry -= 1
+    time.sleep( 30 )
+
+  raise ExecutionException( 'Error Executing "{0}", rc: {1}'.format( cmd, rc ) )
 
 
 def execute_lines_rc( cmd, dir=None, stdin=None, extra_env=None ):
