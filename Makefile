@@ -41,8 +41,8 @@ dist-clean: clean
 
 .PHONY:: all install version clean dist-clean
 
-test-distros:
-	echo ubuntu-xenial
+test-blueprints:
+	echo ubuntu-xenial-base
 
 test-requires:
 	echo flake8 python3-cinp python3-dev python3-pytest python3-pytest-cov
@@ -53,10 +53,10 @@ lint:
 test:
 	py.test-3 nullunit --cov=nullunit --cov-report html --cov-report term
 
-.PHONY:: test-distrostest-requires lint test
+.PHONY:: test-blueprints test-requires lint test
 
-dpkg-distros:
-	echo ubuntu-trusty ubuntu-xenial ubuntu-bionic
+dpkg-blueprints:
+	echo ubuntu-trusty-base ubuntu-xenial-base ubuntu-bionic-base ubuntu-focal-base
 
 dpkg-requires:
 	echo dpkg-dev debhelper python3-dev python3-setuptools dh-python
@@ -72,10 +72,10 @@ dpkg:
 dpkg-file:
 	echo $(shell ls ../nullunit_*.deb)
 
-.PHONY:: dpkg-distros dpkg-requires dpkg-file
+.PHONY:: dpkg-blueprints dpkg-requires dpkg-file
 
-rpm-distros:
-	echo centos-6 centos-7
+rpm-blueprints:
+	echo centos-6-base centos-7-base
 
 rpm-requires:
 	echo rpm-build
@@ -96,7 +96,7 @@ rpm:
 rpm-file:
 	echo $(shell ls rpmbuild/RPMS/*/nullunit-*.rpm)
 
-.PHONY:: rpm-distros rpm-requires rpm-file
+.PHONY:: rpm-blueprints rpm-requires rpm-file
 
 auto-builds:
 	echo installcheck
