@@ -104,6 +104,11 @@ def execute( cmd, dir=None, stdin=None, extra_env=None, retry_rc_list=None ):
   raise ExecutionException( 'Error Executing "{0}", rc: {1}'.format( cmd, rc ) )
 
 
+def execute_rc( cmd, dir=None, stdin=None, extra_env=None ):
+  ( results, rc ) = _execute( cmd, dir, stdin, extra_env )
+  return rc
+
+
 def execute_lines_rc( cmd, dir=None, stdin=None, extra_env=None ):
   ( results, rc ) = _execute( cmd, dir, stdin, extra_env )
   return ( results.splitlines(), rc )

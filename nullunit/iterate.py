@@ -6,7 +6,7 @@ import logging
 import time
 import itertools
 from nullunit.common import GIT_CMD, WORK_DIR, PACKAGE_MANAGER, getPackrat, getContractor, getConfluence, runMake, MakeException
-from nullunit.procutils import execute, ExecutionException
+from nullunit.procutils import execute, execute_rc, ExecutionException
 from nullunit.targets import testTarget, buildTarget, docTarget, otherTarget
 
 
@@ -215,7 +215,8 @@ def doRequires( state, mcp, config ):
     elif PACKAGE_MANAGER == 'yum':
       execute( '/usr/bin/yum install -y {0}'.format( ' '.join( required_list ) ) )
       for required in required_list:
-        execute( '/usr/bin/rpm --query {0}'.format( required ) )
+        if execute_rc( '/usr/bin/rpm --query {0}'.format( required ) ) != 0 and execute_rc( 'rpm --query --whatprovides {0}'.format( required ) ) != 0:
+          raise Exception( 'Unable to verify if package "{0}" was installed'.format( required ) )
     else:
       raise Exception( 'Unknown Package manager "{0}"'.format( PACKAGE_MANAGER ) )
 

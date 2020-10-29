@@ -105,11 +105,11 @@ installcheck-depends:
 	echo nullunit:dev
 
 installcheck-resources:
-	echo xenial:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-xenial-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
-	echo bionic:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-bionic-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
-	echo focal:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-focal-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
-	echo centos-6:{ \"resource\": \"vm\", \"blueprint\": \"centos-6-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
-	echo centos-7:{ \"resource\": \"vm\", \"blueprint\": \"centos-7-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\" } ] } }
+	echo xenial:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-xenial-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\", \"key_uri\": \"http://repo/repo-key\" } ] } }
+	echo bionic:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-bionic-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\", \"key_uri\": \"http://repo/repo-key\" } ] } }
+	echo focal:{ \"resource\": \"vm\", \"blueprint\": \"ubuntu-focal-base\", \"config_values\": { \"\<repo_list\": [ { \"distribution\":\"{{ distro_version }}\", \"type\":\"apt\" ,\"uri\":\"http://repo/apt-dev\", \"components\":[ \"main\" ], \"proxy\":\"local\", \"key_uri\": \"http://repo/repo-key\" } ] } }
+	echo centos-6:{ \"resource\": \"vm\", \"blueprint\": \"centos-6-base\", \"config_values\": { \"\<repo_list\": [ { \"type\":\"yum\" ,\"uri\":\"http://repo/yum-dev/rhel/main/{{ distro_version }}/\", \"name\":\"devrepo\", \"proxy\":\"local\", \"key_file\": \"/etc/pki/rpm-gpg/devrepo\", \"key_uri\": \"http://repo/repo-key\" } ] } }
+	echo centos-7:{ \"resource\": \"vm\", \"blueprint\": \"centos-7-base\", \"config_values\": { \"\<repo_list\": [ { \"type\":\"yum\" ,\"uri\":\"http://repo/yum-dev/rhel/main/{{ distro_version }}/\", \"name\": \"devrepo\" , \"proxy\":\"local\", \"key_file\": \"/etc/pki/rpm-gpg/devrepo\", \"key_uri\": \"http://repo/repo-key\" } ] } }
 
 installcheck:
 ifeq (ubuntu, $(DISTRO))
